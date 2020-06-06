@@ -1,2 +1,1 @@
-# box-rest
-This is the box backend rest project
+# Skeleton project for Swagger
