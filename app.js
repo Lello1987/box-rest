@@ -6,35 +6,29 @@ var dotenv = require('dotenv').config();
 var winston = require('./api/helpers/winston');
 
 // Mongo Database
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-
-// Database Name
-const dbName = 'box';
-
-const url = 'mongodb://' + process.env.MONGO_HOST + ':' + process.env.MONGO_PORT + '/' + dbName;
-
-const options = {
-  useUnifiedTopology: true,
-  keepAlive: 6000000,
-  connectTimeoutMS: 600000,
-};
-
-// Use connect method to connect to the server
-MongoClient.connect(url, options, function(err, client) {
-  assert.equal(null, err);
-  winston.info("Connected successfully to server");
-
-  //const db = client.db(dbName);
-
-  client.close();
-});
+const dbMongo = require('./db/dbNativeMongo');
 
 module.exports = app; // for testing
 
 var config = {
   appRoot: __dirname // required config
 };
+
+// Connect to Mongo on start
+dbMongo.connect('mongodb://' + process.env.MONGO_USER +
+  ':' + process.env.MONGO_PASSWORD + '@' + process.env.MONGO_HOST + ':' +
+  process.env.MONGO_PORT + '/' + process.env.MONGO_DB + '?authSource=admin',
+  function(err) {
+    if (err) {
+      winston.error('500 - Unable to connect to MongoDB');
+      process.exit(1);
+    } else {
+      const dbmPort = process.env.DBMONGO_PORT;
+      app.listen(dbmPort, function() {
+        winston.info('Native MongoDB listening on port ' + dbmPort);
+      });
+    }
+});
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
