@@ -15,9 +15,8 @@ COPY app.js /usr/src/app/app.js
 
 # Install all dependencies
 RUN npm install
-RUN npm install -g swagger
 
 # Expose the port
 EXPOSE 3000
 
-CMD [ "swagger", "project", "start" ]
+CMD [ "npm", "start" ]

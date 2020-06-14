@@ -7,7 +7,13 @@
 
 ### Mongo container using authentication
 1. docker pull mongo
-2. docker run --name mongo -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root -d mongo
+2. docker run --name mongo -d mongo
+3. docker container exec -it mongo bash
+4. mongo
+5. use box
+6. db.createUser({ user: "root", pwd: "root", roles: [] })
+7. exit
+8. mongo --port 27017 -u root -p root --authenticationDatabase box
 
 ## Deploy Docker mongo-express container
 ### Mongo-Express container without authentication
