@@ -2,6 +2,34 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+var dotenv = require('dotenv').config();
+var winston = require('./api/helpers/winston');
+
+// Mongo Database
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+
+// Database Name
+const dbName = 'box';
+
+const url = 'mongodb://' + process.env.MONGO_HOST + ':' + process.env.MONGO_PORT + '/' + dbName;
+
+const options = {
+  useUnifiedTopology: true,
+  keepAlive: 6000000,
+  connectTimeoutMS: 600000,
+};
+
+// Use connect method to connect to the server
+MongoClient.connect(url, options, function(err, client) {
+  assert.equal(null, err);
+  winston.info("Connected successfully to server");
+
+  //const db = client.db(dbName);
+
+  client.close();
+});
+
 module.exports = app; // for testing
 
 var config = {
@@ -14,10 +42,8 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  var port = process.env.PORT || 3000;
   app.listen(port);
 
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
+  winston.info('Listening on port ' + port);
 });
