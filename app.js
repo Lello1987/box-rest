@@ -2,22 +2,22 @@
 // eslint-disable-next-line no-unused-vars
 let dotenv = require('dotenv').config();
 let mongoose = require('mongoose');
-const cors = require('cors');
+let cors = require('cors');
+let express = require('express');
 let dbConfig = require('./db/dbConfig');
 let winston = require('./api/helpers/winston');
-const express = require('express');
-const app = express();
+let app = express();
 
 // Routers
-const coinRouter = require('./api/routers/coinsRouter');
+let coinsRouter = require('./api/routers/coinsRouter');
 
 module.exports = app;
 
 app.use(cors());
-app.use('/coins', coinRouter);
+app.use('/coins', coinsRouter);
 
-const port = process.env.SERVER_PORT;
-const server = app.listen(port);
+let port = process.env.SERVER_PORT;
+let server = app.listen(port);
 server.timeout = 600000;
 winston.info('Listening on port ' + port);
 

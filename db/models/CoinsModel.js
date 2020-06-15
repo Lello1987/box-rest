@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const winston = require('../../api/helpers/winston');
+let mongoose = require('mongoose');
+let winston = require('../../api/helpers/winston');
 
-const CoinsModelSchema = new mongoose.Schema({
+let CoinsModelSchema = new mongoose.Schema({
   coinValue: {
     type: Number,
     enum: [0.01, 0.02, 0.05, 0.10, 0.20, 0.50, 1.00, 2.00],
@@ -22,7 +22,7 @@ const CoinsModelSchema = new mongoose.Schema({
   }
 });
 
-const coinsModel = mongoose.model('CoinsModel', CoinsModelSchema, 'CoinsModel');
+let coinsModel = mongoose.model('CoinsModel', CoinsModelSchema, 'CoinsModel');
 
 winston.info('Coins model schema created');
 
