@@ -1,20 +1,20 @@
 'use strict';
 // eslint-disable-next-line no-unused-vars
 let dotenv = require('dotenv').config();
-let mongoose = require('mongoose');
 let cors = require('cors');
+let mongoose = require('mongoose');
 let express = require('express');
 let dbConfig = require('./db/dbConfig');
 let winston = require('./api/helpers/winston');
 let app = express();
 
 // Routers
-let coinsRouter = require('./api/routers/coinsRouter');
+let boxRouter = require('./api/routers/boxRouter');
 
 module.exports = app;
 
 app.use(cors());
-app.use('/coins', coinsRouter);
+app.use('/box', boxRouter);
 
 let port = process.env.SERVER_PORT;
 let server = app.listen(port);
