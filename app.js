@@ -9,12 +9,12 @@ const express = require('express');
 const app = express();
 
 // Routers
-const coinRouter = require('./api/routers/coinRouter');
+const coinRouter = require('./api/routers/coinsRouter');
 
 module.exports = app;
 
 app.use(cors());
-app.use('/v1/coin', coinRouter);
+app.use('/coins', coinRouter);
 
 const port = process.env.SERVER_PORT;
 const server = app.listen(port);
