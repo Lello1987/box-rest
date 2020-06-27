@@ -1,23 +1,39 @@
 'use strict';
+// eslint-disable-next-line no-unused-vars
+let dotenv = require('dotenv').config();
+let cors = require('cors');
+let mongoose = require('mongoose');
+let express = require('express');
+let dbConfig = require('./db/dbConfig');
+let winston = require('./api/helpers/winston');
+let app = express();
 
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
-module.exports = app; // for testing
+// Routers
+app.use(cors());
+let boxRouter = require('./api/routers/boxRouter');
+let authenticationRouter = require('./api/routers/authenticationRouter');
 
-var config = {
-  appRoot: __dirname // required config
-};
+module.exports = app;
 
-SwaggerExpress.create(config, function(err, swaggerExpress) {
-  if (err) { throw err; }
+app.use(cors());
+app.use('/box', boxRouter);
+app.use('/authentication', authenticationRouter);
 
-  // install middleware
-  swaggerExpress.register(app);
+let port = process.env.SERVER_PORT;
+let server = app.listen(port);
+server.timeout = 600000;
+winston.info("Listening on port " + port);
 
-  var port = process.env.PORT || 10010;
-  app.listen(port);
-
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
+mongoose.Promise = global.Promise;
+mongoose.connect(dbConfig.url, {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  user: dbConfig.user,
+  pass: dbConfig.pwd
+}).then(() => {
+  winston.info("Successfully connected to the database");
+}).catch(err => {
+  winston.info("Error connecting to the database");
+  process.exit();
 });
