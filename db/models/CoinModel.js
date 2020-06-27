@@ -9,7 +9,7 @@ let CoinModelSchema = new mongoose.Schema({
   },
   coinCurrency: {
     type: String,
-    enum: ['dollar', 'euro'],
+    enum: ["dollar", "euro"],
     required: true,
   },
   coinTime: {
@@ -22,8 +22,8 @@ let CoinModelSchema = new mongoose.Schema({
   }
 });
 
-let coinModel = mongoose.model('CoinModel', CoinModelSchema, 'CoinModel');
+let coinModel = mongoose.model("CoinModel", CoinModelSchema, "CoinModel");
 
-winston.info('Coin model schema created');
+winston.info("Coin model schema created");
 
 module.exports = coinModel;

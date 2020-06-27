@@ -1,6 +1,9 @@
 module.exports = {
   createBox: createBox,
+  getBox: getBox,
+  getBoxes: getBoxes,
   deleteBox: deleteBox,
+  updateBox: updateBox,
   insertCoin: insertCoin,
   boxAmount: boxAmount,
   boxCoin: boxCoin,
@@ -29,6 +32,36 @@ function createBox(req, res) {
 }
 
 /**
+  Get a box
+**/
+function getBox(req, res) {
+  BoxModel.find({ boxId: req.query.boxId}, function(err, box) {
+    if (err) {
+      res.status(500).send(err);
+      winston.error(err);
+    } else {
+      res.status(200).send(box);
+      winston.info(box);
+    }
+  });
+}
+
+/**
+  Get all boxes
+**/
+function getBoxes(req, res) {
+  BoxModel.find({}, function(err, box) {
+    if (err) {
+      res.status(500).send(err);
+      winston.error(err);
+    } else {
+      res.status(200).send(box);
+      winston.info(box);
+    }
+  });
+}
+
+/**
   Delete a coins box
 **/
 function deleteBox(req, res) {
@@ -39,6 +72,25 @@ function deleteBox(req, res) {
     } else {
       res.status(200).send("Box " + req.query.boxId + " deleted");
       winston.info("Box " + req.query.boxId + " deleted");
+    }
+  });
+}
+
+/**
+  Update a coins box
+**/
+function updateBox(req, res) {
+  const body = req.body;
+  BoxModel.updateOne({ boxId: req.query.boxId}, body, function(err, box) {
+    if (err) {
+      res.status(500).send(err);
+      winston.error(err);
+    } else if (box.n === 0) {
+      res.status(404).send("Box " + req.query.boxId + " not found");
+      winston.info("Box " + req.query.boxId + " not found");
+    } else {
+      res.status(200).send("Box " + req.query.boxId + " update");
+      winston.info("Box " + req.query.boxId + " update");
     }
   });
 }

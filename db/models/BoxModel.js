@@ -33,8 +33,8 @@ let BoxModelSchema = new mongoose.Schema({
   },
 });
 
-let boxModel = mongoose.model('BoxModel', BoxModelSchema, 'BoxModel');
+let boxModel = mongoose.model("BoxModel", BoxModelSchema, "BoxModel");
 
-winston.info('Box model schema created');
+winston.info("Box model schema created");
 
 module.exports = boxModel;
