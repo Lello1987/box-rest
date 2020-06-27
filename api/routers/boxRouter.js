@@ -10,30 +10,49 @@ let jsonParser = bodyParser.json();
 router.use(expressValidator());
 
 router.post('/', jsonParser, function(req, res) {
-  boxController.createBox(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.createBox(req, res);
+  });
 });
 
 router.get('/', jsonParser, function(req, res) {
-  if (req.query.boxId == "all")
-    boxController.getBoxes(req, res);
-  else
-    boxController.getBox(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result){
+      if (req.query.boxId == "all")
+        boxController.getBoxes(req, res);
+      else
+        boxController.getBox(req, res);
+    }
+  });
 });
 
 router.delete('/', jsonParser, function(req, res) {
-  boxController.deleteBox(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.deleteBox(req, res);
+  });
 });
 
 router.patch('/', jsonParser, function(req, res) {
-  boxController.updateBox(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.updateBox(req, res);
+  });
 });
 
 router.post('/coin', jsonParser, function(req, res) {
-  boxController.insertCoin(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.insertCoin(req, res);
+  });
 });
 
 router.get('/coin', jsonParser, function(req, res) {
-  boxController.boxCoin(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.boxCoin(req, res);
+  });
 });
 
 router.get('/coins', jsonParser, function(req, res) {
@@ -44,7 +63,10 @@ router.get('/coins', jsonParser, function(req, res) {
 });
 
 router.get('/amount', jsonParser, function(req, res) {
-  boxController.boxAmount(req, res);
+  validation.validateToken(req, res, function(result) {
+    if (result)
+      boxController.boxAmount(req, res);
+  });
 });
 
 module.exports = router;

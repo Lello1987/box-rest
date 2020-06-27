@@ -35,13 +35,18 @@ function createBox(req, res) {
   Get a box
 **/
 function getBox(req, res) {
-  BoxModel.find({ boxId: req.query.boxId}, function(err, box) {
+  BoxModel.findOne({ boxId: req.query.boxId}, function(err, box) {
     if (err) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      res.status(200).send(box);
-      winston.info(box);
+      if (box != null) {
+        res.status(200).send(box);
+        winston.info(box);
+      } else {
+        res.status(404).send("Box " + req.query.boxId + " not exist");
+        winston.error("Box " + req.query.boxId + " not exist");
+      }
     }
   });
 }
@@ -65,13 +70,30 @@ function getBoxes(req, res) {
   Delete a coins box
 **/
 function deleteBox(req, res) {
-  BoxModel.deleteOne({ boxId: req.query.boxId}, function(err, box) {
+  BoxModel.findOne({ boxId: req.query.boxId}, function(err, box) {
     if (err) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      res.status(200).send("Box " + req.query.boxId + " deleted");
-      winston.info("Box " + req.query.boxId + " deleted");
+      if (box != null) {
+        BoxModel.deleteOne({ boxId: req.query.boxId}, function(err, box) {
+          if (err) {
+            res.status(500).send(err);
+            winston.error(err);
+          } else {
+            if (box != null) {
+              res.status(200).send("Box " + req.query.boxId + " deleted");
+              winston.info("Box " + req.query.boxId + " deleted");
+            } else {
+              res.status(404).send("Box " + req.query.boxId + " not exist");
+              winston.error("Box " + req.query.boxId + " not exist");
+            }
+          }
+        });
+      } else {
+        res.status(404).send("Box " + req.query.boxId + " not exist");
+        winston.error("Box " + req.query.boxId + " not exist");
+      }
     }
   });
 }
@@ -100,25 +122,37 @@ function updateBox(req, res) {
 **/
 function insertCoin(req, res) {
   let body = req.body;
-  CoinModel.create(body, function(err, response) {
+  BoxModel.findOne({ boxId: body.boxId}, function(err, box) {
     if (err) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      // Update box amount
-      let update = {
-        useFindAndModify: false,
-        boxLastUpdate: req.body.coinTime,
-      };
-      BoxModel.findOneAndUpdate({ boxId: req.body.boxId }, { $inc: { boxAmount: req.body.coinValue } }, update, function(err) {
-        if (err)
-          winston.error(err);
-        else {
-          res.status(201).send(response);
-          winston.info(response);
-          winston.info("Box " + req.body.boxId + " amount updated");
-        }
-      });
+      if (box != null) {
+        CoinModel.create(body, function(err, response) {
+          if (err) {
+            res.status(500).send(err);
+            winston.error(err);
+          } else {
+            // Update box amount
+            let update = {
+              useFindAndModify: false,
+              boxLastUpdate: req.body.coinTime,
+            };
+            BoxModel.findOneAndUpdate({ boxId: req.body.boxId }, { $inc: { boxAmount: req.body.coinValue } }, update, function(err) {
+              if (err)
+                winston.error(err);
+              else {
+                res.status(201).send(response);
+                winston.info(response);
+                winston.info("Box " + req.body.boxId + " amount updated");
+              }
+            });
+          }
+        });
+      } else {
+        res.status(404).send("Box " + body.boxId + " not exist");
+        winston.error("Box " + body.boxId + " not exist");
+      }
     }
   });
 }
@@ -132,8 +166,13 @@ function boxAmount(req, res) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      res.status(200).send(box.boxAmount.toString());
-      winston.info(box.boxAmount.toString());
+      if (box != null) {
+        res.status(200).send(box.boxAmount.toString());
+        winston.info(box.boxAmount.toString());
+      } else {
+        res.status(404).send("Box " + req.query.boxId + " not exist");
+        winston.error("Box " + req.query.boxId + " not exist");
+      }
     }
   });
 }
@@ -142,16 +181,28 @@ function boxAmount(req, res) {
   Return the number of coins in the box with specific value
 **/
 function boxCoin(req, res) {
-  CoinModel.countDocuments({
-    coinValue: req.query.coinValue,
-    boxId:req.query.boxId,
-  }, function(err, number) {
+  BoxModel.findOne({ boxId: req.query.boxId}, function(err, box) {
     if (err) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      res.status(200).send(number.toString());
-      winston.info(number.toString());
+      if (box != null) {
+        CoinModel.countDocuments({
+          coinValue: req.query.coinValue,
+          boxId:req.query.boxId,
+        }, function(err, number) {
+          if (err) {
+            res.status(500).send(err);
+            winston.error(err);
+          } else {
+            res.status(200).send(number.toString());
+            winston.info(number.toString());
+          }
+        });
+      } else {
+        res.status(404).send("Box " + req.query.boxId + " not exist");
+        winston.error("Box " + req.query.boxId + " not exist");
+      }
     }
   });
 }
@@ -160,15 +211,27 @@ function boxCoin(req, res) {
   Return the number of coins in the box
 **/
 function boxCoins(req, res) {
-  CoinModel.countDocuments({
-    boxId:req.query.boxId,
-  }, function(err, number) {
+  BoxModel.findOne({ boxId: req.query.boxId}, function(err, box) {
     if (err) {
       res.status(500).send(err);
       winston.error(err);
     } else {
-      res.status(200).send(number.toString());
-      winston.info(number.toString());
+      if (box != null) {
+        CoinModel.countDocuments({
+          boxId:req.query.boxId,
+        }, function(err, number) {
+          if (err) {
+            res.status(500).send(err);
+            winston.error(err);
+          } else {
+            res.status(200).send(number.toString());
+            winston.info(number.toString());
+          }
+        });
+      } else {
+        res.status(404).send("Box " + req.query.boxId + " not exist");
+        winston.error("Box " + req.query.boxId + " not exist");
+      }
     }
   });
 }

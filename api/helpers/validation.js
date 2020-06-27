@@ -6,7 +6,7 @@ function validateToken(req, res, callback) {
     if (result) {
       callback(true);
     } else {
-      res.status(401).send('Unauthorized, failed to authenticate token');
+      res.status(401).send("Unauthorized, failed to authenticate token");
  }
   });
 }

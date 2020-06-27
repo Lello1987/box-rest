@@ -22,7 +22,7 @@ app.use('/authentication', authenticationRouter);
 let port = process.env.SERVER_PORT;
 let server = app.listen(port);
 server.timeout = 600000;
-winston.info("Listening on port "" + port);
+winston.info("Listening on port " + port);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(dbConfig.url, {

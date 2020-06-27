@@ -5,10 +5,12 @@ let ControllerModelSchema = new mongoose.Schema({
   controller: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 

@@ -5,6 +5,7 @@ let BoxModelSchema = new mongoose.Schema({
   boxId: {
     type: String,
     required: true,
+    unique: true,
   },
   boxAmount: {
     type: Number,
